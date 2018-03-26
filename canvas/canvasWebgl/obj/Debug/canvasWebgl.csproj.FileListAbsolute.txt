@@ -1,0 +1,12 @@
+D:\git\webgl\canvas\canvasWebgl\bin\canvasWebgl.dll.config
+D:\git\webgl\canvas\canvasWebgl\bin\canvasWebgl.dll
+D:\git\webgl\canvas\canvasWebgl\bin\canvasWebgl.pdb
+D:\git\webgl\canvas\canvasWebgl\obj\Debug\canvasWebgl.csprojResolveAssemblyReference.cache
+D:\git\webgl\canvas\canvasWebgl\obj\Debug\canvasWebgl.dll
+D:\git\webgl\canvas\canvasWebgl\obj\Debug\canvasWebgl.pdb
+D:\git\html2d\canvas\canvasWebgl\bin\canvasWebgl.dll.config
+D:\git\html2d\canvas\canvasWebgl\bin\canvasWebgl.dll
+D:\git\html2d\canvas\canvasWebgl\bin\canvasWebgl.pdb
+D:\git\html2d\canvas\canvasWebgl\obj\Debug\canvasWebgl.csprojResolveAssemblyReference.cache
+D:\git\html2d\canvas\canvasWebgl\obj\Debug\canvasWebgl.dll
+D:\git\html2d\canvas\canvasWebgl\obj\Debug\canvasWebgl.pdb

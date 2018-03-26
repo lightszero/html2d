@@ -1,0 +1,108 @@
+﻿<--vs "test"-->
+	attribute vec3 position;//顶点提供的数据
+	attribute vec4 color; 
+	attribute vec2 uv; 
+
+	uniform mat4 matrix;
+    //uniform mat4 uModelMatrix;//材质提供的数据
+    //uniform mat4 uViewProjMatrix;
+
+	varying vec4 vColor;//输出给fs的参数
+	varying vec2 vUv;//输出给fs的参数
+    void main(void) 
+	{
+        gl_Position =matrix * vec4(position,1);// uViewProjMatrix * uModelMatrix * position;
+		vColor = color;
+		vUv = uv;
+    }
+<-- fs "test" -->
+	precision mediump float;//指定浮点型精确度
+	varying vec4 vColor;//从vs接收的参数
+ 	varying vec2 vUv;//从vs接收的参数
+
+	uniform sampler2D tex0;  //从外部设置的参数
+	void main(void) 
+	{
+		vec4 c = texture2D(tex0, vUv);  
+        gl_FragColor = vColor * c;
+    }
+
+
+<--vs "spritedefault"-->//默认sprite材质
+	attribute vec3 position;//顶点提供的数据
+	attribute vec4 color; 
+	attribute vec2 uv; 
+
+	uniform mat4 matrix;
+    //uniform mat4 uModelMatrix;//材质提供的数据
+    //uniform mat4 uViewProjMatrix;
+
+	varying vec4 vColor;//输出给fs的参数
+	varying vec2 vUv;//输出给fs的参数
+    void main(void) 
+	{
+        gl_Position =matrix * vec4(position,1);// uViewProjMatrix * uModelMatrix * position;
+		vColor = color;
+		vUv = uv;
+    }
+<-- fs "spritedefault" -->
+	precision mediump float;//指定浮点型精确度
+	varying vec4 vColor;//从vs接收的参数
+ 	varying vec2 vUv;//从vs接收的参数
+
+	uniform sampler2D tex0;  //从外部设置的参数
+	void main(void) 
+	{
+		vec4 cv = vColor;
+		cv.rgb*=vColor.a;//预乘alpha
+
+
+		vec4 c = texture2D(tex0, vUv); //贴图已经乘过了
+        gl_FragColor = cv * c;
+    }
+	
+<--vs "spritefont"-->//sprite font材质
+	attribute vec3 position;//顶点提供的数据
+	attribute vec4 color; 
+	attribute vec4 color2; 
+	attribute vec2 uv; 
+
+	uniform mat4 matrix;
+    //uniform mat4 uModelMatrix;//材质提供的数据
+    //uniform mat4 uViewProjMatrix;
+
+	varying vec4 vColor;//输出给fs的参数
+	varying vec4 vColor2;//输出给fs的参数
+	varying vec2 vUv;//输出给fs的参数
+    void main(void) 
+	{
+        gl_Position =matrix * vec4(position,1);// uViewProjMatrix * uModelMatrix * position;
+		vColor = color;
+		vColor2 = color2;
+		vUv = uv;
+    }
+<-- fs "spritefont" -->
+	precision mediump float;//指定浮点型精确度
+	varying vec4 vColor;//从vs接收的参数
+	varying vec4 vColor2;//输出给fs的参数
+ 	varying vec2 vUv;//从vs接收的参数
+
+	uniform sampler2D tex0;  //从外部设置的参数
+	void main(void) 
+	{
+		vec4 c = texture2D(tex0, vUv);  
+		c.a = 0.0;
+
+		if(c.r>0.4 &&c.r<=0.5)
+		{
+			c=vColor2;
+		}
+		if(c.r>0.5)
+		{
+			c=vColor;
+		}
+        gl_FragColor = c;
+
+		//做一个alpha预乘，
+		gl_FragColor.rgb*=gl_FragColor.a;
+    }
