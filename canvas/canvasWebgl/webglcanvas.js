@@ -306,6 +306,12 @@ var lighttool;
 (function (lighttool) {
     var texutreMgrItem = /** @class */ (function () {
         function texutreMgrItem() {
+            this.tex = null;
+            this.url = "";
+            this.urladd = "";
+            this.format = lighttool.textureformat.RGB;
+            this.mipmap = false;
+            this.linear = false;
         }
         return texutreMgrItem;
     }());
@@ -371,6 +377,10 @@ var lighttool;
     lighttool.textureMgr = textureMgr;
     var atlasMgrItem = /** @class */ (function () {
         function atlasMgrItem() {
+            this.atals = null;
+            this.url = "";
+            this.urlatalstex = "";
+            this.urlatalstex_add = "";
         }
         return atlasMgrItem;
     }());
@@ -443,6 +453,10 @@ var lighttool;
     lighttool.atlasMgr = atlasMgr;
     var fontMgrItem = /** @class */ (function () {
         function fontMgrItem() {
+            this.font = null;
+            this.url = "";
+            this.urlatalstex = "";
+            this.urlatalstex_add = "";
         }
         return fontMgrItem;
     }());
@@ -582,6 +596,11 @@ var lighttool;
     //shader
     var shadercode = /** @class */ (function () {
         function shadercode() {
+            this.vscode = "";
+            this.fscode = "";
+            this.vs = null;
+            this.fs = null;
+            this.program = null;
             this.posPos = -1;
             this.posColor = -1;
             this.posColor2 = -1;
@@ -648,10 +667,12 @@ var lighttool;
                     var t = stag[j];
                     if (t.length == 0)
                         continue;
-                    if (t == "vs") {
+                    if (t == "vs") //vectexshader
+                     {
                         lasttag = 1;
                     }
-                    else if (t == "fs") {
+                    else if (t == "fs") //fragmentshader
+                     {
                         lasttag = 2;
                     }
                     else {
@@ -748,6 +769,19 @@ var lighttool;
     lighttool.spriteColor = spriteColor;
     var spritePoint = /** @class */ (function () {
         function spritePoint() {
+            this.x = 0;
+            this.y = 0;
+            this.z = 0;
+            this.r = 0;
+            this.g = 0;
+            this.b = 0;
+            this.a = 0;
+            this.r2 = 0;
+            this.g2 = 0;
+            this.b2 = 0;
+            this.a2 = 0;
+            this.u = 0;
+            this.v = 0;
         }
         return spritePoint;
     }());
@@ -755,12 +789,28 @@ var lighttool;
     //sprite材质
     var spriteMat = /** @class */ (function () {
         function spriteMat() {
+            this.shader = "";
+            this.transparent = false;
+            this.tex0 = null;
+            this.tex1 = null;
+            this.col0 = new spriteColor();
+            this.col1 = new spriteColor();
         }
         return spriteMat;
     }());
     lighttool.spriteMat = spriteMat;
     var stateRecorder = /** @class */ (function () {
         function stateRecorder(webgl) {
+            this.DEPTH_WRITEMASK = false;
+            this.DEPTH_TEST = false;
+            this.DEPTH_FUNC = 0;
+            this.BLEND = false;
+            this.BLEND_EQUATION = 0;
+            this.BLEND_SRC_RGB = 0;
+            this.BLEND_SRC_ALPHA = 0;
+            this.BLEND_DST_RGB = 0;
+            this.BLEND_DST_ALPHA = 0;
+            this.ACTIVE_TEXTURE = 0;
             this.webgl = webgl;
         }
         stateRecorder.prototype.record = function () {
@@ -809,6 +859,9 @@ var lighttool;
     var spriteBatcher = /** @class */ (function () {
         function spriteBatcher(webgl, shaderparser) {
             this.ztest = true;
+            this.shadercode = null;
+            //begindraw 和 setmat 到底要不要分开，这是需要再思考一下的
+            this.mat = null;
             this.array = new Float32Array(1024 * 13); //ness
             this.dataseek = 0;
             this.rectClip = null;
@@ -994,7 +1047,8 @@ var lighttool;
         spriteBatcher.prototype.addRect = function (ps) {
             if (this.shadercode == undefined)
                 return;
-            if (this.rectClip != null) {
+            if (this.rectClip != null) //使用裁剪
+             {
                 var xmin = ps[0].x;
                 var xmax = ps[3].x;
                 var ymin = ps[0].y;
@@ -1152,6 +1206,8 @@ var lighttool;
             this.linear = false;
             this.width = 0;
             this.height = 0;
+            //创建读取器，有可能失败
+            this.reader = null;
             this.disposeit = false;
             this.pointbuf = [
                 { x: 0, y: 0, z: 0, r: 0, g: 0, b: 0, a: 0, r2: 0, g2: 0, b2: 0, a2: 0, u: 0, v: 0 },
@@ -1225,8 +1281,7 @@ var lighttool;
                 throw new Error("only rgba texture can read");
             if (this.texture == null)
                 return null;
-            if (this.reader == null)
-                this.reader = new texReader(this.webgl, this.texture, this.width, this.height, redOnly);
+            this.reader = new texReader(this.webgl, this.texture, this.width, this.height, redOnly);
             return this.reader;
         };
         dynTexture.prototype.dispose = function () {
@@ -1343,9 +1398,12 @@ var lighttool;
             var _this = this;
             this.img = null;
             this.loaded = false;
+            this.texture = null;
             this.width = 0;
             this.height = 0;
             this.mat = null;
+            //创建读取器，有可能失败
+            this.reader = null;
             this.disposeit = false;
             this.pointbuf = [
                 { x: 0, y: 0, z: 0, r: 0, g: 0, b: 0, a: 0, r2: 0, g2: 0, b2: 0, a2: 0, u: 0, v: 0 },
@@ -1359,7 +1417,7 @@ var lighttool;
             this.mat.tex0 = this;
             this.mat.transparent = true;
             this.mat.shader = "spritedefault";
-            if (url == null)
+            if (url == null) //不给定url 则 texture 不加载
                 return;
             this.texture = webgl.createTexture();
             this.img = new Image(); // HTMLImageElement(); //ness
@@ -1435,8 +1493,7 @@ var lighttool;
                 throw new Error("only rgba texture can read");
             if (this.texture == null)
                 return null;
-            if (this.reader == null)
-                this.reader = new texReader(this.webgl, this.texture, this.width, this.height, redOnly);
+            this.reader = new texReader(this.webgl, this.texture, this.width, this.height, redOnly);
             return this.reader;
         };
         spriteTexture.prototype.dispose = function () {
@@ -1546,6 +1603,12 @@ var lighttool;
     lighttool.spriteTexture = spriteTexture;
     var sprite = /** @class */ (function () {
         function sprite() {
+            this.x = 0;
+            this.y = 0;
+            this.w = 0;
+            this.h = 0;
+            this.xsize = 0;
+            this.ysize = 0;
         }
         return sprite;
     }());
@@ -1556,6 +1619,9 @@ var lighttool;
             if (atlasurl === void 0) { atlasurl = null; }
             if (texture === void 0) { texture = null; }
             var _this = this;
+            this.textureurl = "";
+            this.texturewidth = 0;
+            this.textureheight = 0;
             this.sprites = {};
             this.webgl = webgl;
             if (atlasurl == null) {
@@ -1606,6 +1672,15 @@ var lighttool;
     //font
     var charinfo = /** @class */ (function () {
         function charinfo() {
+            this.x = 0; //uv
+            this.y = 0;
+            this.w = 0;
+            this.h = 0;
+            this.xSize = 0;
+            this.ySize = 0;
+            this.xOffset = 0; //偏移
+            this.yOffset = 0;
+            this.xAddvance = 0; //字符宽度
         }
         return charinfo;
     }());
@@ -1613,6 +1688,14 @@ var lighttool;
     var spriteFont = /** @class */ (function () {
         function spriteFont(webgl, urlconfig, texture) {
             var _this = this;
+            this.cmap = {};
+            this.fontname = "";
+            this.pointSize = 0; //像素尺寸
+            this.padding = 0; //间隔
+            this.lineHeight = 0; //行高
+            this.baseline = 0; //基线
+            this.atlasWidth = 0;
+            this.atlasHeight = 0;
             this.pointbuf = [
                 { x: 0, y: 0, z: 0, r: 0, g: 0, b: 0, a: 0, r2: 0, g2: 0, b2: 0, a2: 0, u: 0, v: 0 },
                 { x: 0, y: 0, z: 0, r: 0, g: 0, b: 0, a: 0, r2: 0, g2: 0, b2: 0, a2: 0, u: 0, v: 0 },

@@ -71,11 +71,11 @@ namespace lighttool
     //shader
     export class shadercode
     {
-        vscode: string;
-        fscode: string;
-        vs: WebGLShader | null;
-        fs: WebGLShader | null;
-        program: WebGLProgram | null;
+        vscode: string = "";
+        fscode: string = "";
+        vs: WebGLShader | null = null;
+        fs: WebGLShader | null = null;
+        program: WebGLProgram | null = null;
 
         posPos: number = -1;
         posColor: number = -1;
@@ -268,33 +268,33 @@ namespace lighttool
     }
     export class spritePoint
     {
-        x: number;
-        y: number;
-        z: number;
+        x: number = 0;
+        y: number = 0;
+        z: number = 0;
 
-        r: number;
-        g: number;
-        b: number;
-        a: number;
+        r: number = 0;
+        g: number = 0;
+        b: number = 0;
+        a: number = 0;
 
-        r2: number;
-        g2: number;
-        b2: number;
-        a2: number;
+        r2: number = 0;
+        g2: number = 0;
+        b2: number = 0;
+        a2: number = 0;
 
-        u: number;
-        v: number;
+        u: number = 0;
+        v: number = 0;
     }
 
     //sprite材质
     export class spriteMat
     {
-        shader: string;
-        transparent: boolean;
-        tex0: ITexture2D | null;
-        tex1: ITexture2D | null;
-        col0: spriteColor;
-        col1: spriteColor;
+        shader: string = "";
+        transparent: boolean = false;
+        tex0: ITexture2D | null = null;
+        tex1: ITexture2D | null = null;
+        col0: spriteColor = new spriteColor();
+        col1: spriteColor = new spriteColor();
     }
     export class stateRecorder
     {
@@ -303,18 +303,18 @@ namespace lighttool
         {
             this.webgl = webgl;
         }
-        DEPTH_WRITEMASK: boolean;
-        DEPTH_TEST: boolean;
-        DEPTH_FUNC: number;
-        BLEND: boolean;
-        BLEND_EQUATION: number;
-        BLEND_SRC_RGB: number;
-        BLEND_SRC_ALPHA: number;
-        BLEND_DST_RGB: number;
-        BLEND_DST_ALPHA: number;
+        DEPTH_WRITEMASK: boolean = false;
+        DEPTH_TEST: boolean = false;
+        DEPTH_FUNC: number = 0;
+        BLEND: boolean = false;
+        BLEND_EQUATION: number = 0;
+        BLEND_SRC_RGB: number = 0;
+        BLEND_SRC_ALPHA: number = 0;
+        BLEND_DST_RGB: number = 0;
+        BLEND_DST_ALPHA: number = 0;
         CURRENT_PROGRAM: any;
         ARRAY_BUFFER: any;
-        ACTIVE_TEXTURE: number;
+        ACTIVE_TEXTURE: number = 0;
         TEXTURE_BINDING_2D: any;
         record()
         {
@@ -403,9 +403,9 @@ namespace lighttool
 
             this.recorder.restore();
         }
-        shadercode: shadercode;
+        shadercode: shadercode | null = null;
         //begindraw 和 setmat 到底要不要分开，这是需要再思考一下的
-        mat: spriteMat | null;
+        mat: spriteMat | null = null;
         setMat(mat: spriteMat): void
         {
             if (mat == this.mat) return;
@@ -782,7 +782,7 @@ namespace lighttool
     export interface ITexture2D
     {
         texture: WebGLTexture | null;
-        mat: spriteMat| null;
+        mat: spriteMat | null;
         getReader(redOnly: boolean): texReader | null;
         dispose(): void;
         draw(spriteBatcher: spriteBatcher, uv: spriteRect, rect: spriteRect, c: spriteColor): void;
@@ -885,7 +885,7 @@ namespace lighttool
         height: number = 0;
 
         //创建读取器，有可能失败
-        reader: texReader;
+        reader: texReader | null = null;
         getReader(redOnly: boolean): texReader | null
         {
             if (this.reader != null)
@@ -897,8 +897,8 @@ namespace lighttool
             if (this.format != textureformat.RGBA)
                 throw new Error("only rgba texture can read");
             if (this.texture == null) return null;
-            if (this.reader == null)
-                this.reader = new texReader(this.webgl, this.texture, this.width, this.height, redOnly);
+
+            this.reader = new texReader(this.webgl, this.texture, this.width, this.height, redOnly);
 
             return this.reader;
         }
@@ -1079,7 +1079,7 @@ namespace lighttool
         webgl: WebGLRenderingContext;
         img: HTMLImageElement | null = null;
         loaded: boolean = false;
-        texture: WebGLTexture | null;
+        texture: WebGLTexture | null = null;
         format: textureformat;
         width: number = 0;
         height: number = 0;
@@ -1095,7 +1095,7 @@ namespace lighttool
         }
         mat: spriteMat | null = null;
         //创建读取器，有可能失败
-        reader: texReader;
+        reader: texReader | null = null;
         getReader(redOnly: boolean): texReader | null
         {
             if (this.reader != null)
@@ -1107,8 +1107,9 @@ namespace lighttool
             if (this.format != textureformat.RGBA)
                 throw new Error("only rgba texture can read");
             if (this.texture == null) return null;
-            if (this.reader == null)
-                this.reader = new texReader(this.webgl, this.texture, this.width, this.height, redOnly);
+
+
+            this.reader = new texReader(this.webgl, this.texture, this.width, this.height, redOnly);
 
             return this.reader;
         }
@@ -1196,12 +1197,12 @@ namespace lighttool
 
     export class sprite
     {
-        x: number;
-        y: number;
-        w: number;
-        h: number;
-        xsize: number;
-        ysize: number;
+        x: number = 0;
+        y: number = 0;
+        w: number = 0;
+        h: number = 0;
+        xsize: number = 0;
+        ysize: number = 0;
     }
     //atlas
     export class spriteAtlas
@@ -1231,9 +1232,9 @@ namespace lighttool
 
             return sa;
         }
-        textureurl: string;
-        texturewidth: number;
-        textureheight: number;
+        textureurl: string = "";
+        texturewidth: number = 0;
+        textureheight: number = 0;
         texture: ITexture2D | null;
         sprites: { [id: string]: sprite } = {};
         private _parse(txt: string): void
@@ -1272,15 +1273,15 @@ namespace lighttool
     //font
     export class charinfo
     {
-        x: number;//uv
-        y: number;
-        w: number;
-        h: number;
-        xSize: number;
-        ySize: number;
-        xOffset: number;//偏移
-        yOffset: number;
-        xAddvance: number;//字符宽度
+        x: number = 0;//uv
+        y: number = 0;
+        w: number = 0;
+        h: number = 0;
+        xSize: number = 0;
+        ySize: number = 0;
+        xOffset: number = 0;//偏移
+        yOffset: number = 0;
+        xAddvance: number = 0;//字符宽度
     }
     export class spriteFont
     {
@@ -1288,14 +1289,14 @@ namespace lighttool
         texture: ITexture2D | null;
         mat: spriteMat;
 
-        cmap: { [id: string]: charinfo };
-        fontname: string;
-        pointSize: number;//像素尺寸
-        padding: number;//间隔
-        lineHeight: number;//行高
-        baseline: number;//基线
-        atlasWidth: number;
-        atlasHeight: number;
+        cmap: { [id: string]: charinfo } = {};
+        fontname: string = "";
+        pointSize: number = 0;//像素尺寸
+        padding: number = 0;//间隔
+        lineHeight: number = 0;//行高
+        baseline: number = 0;//基线
+        atlasWidth: number = 0;
+        atlasHeight: number = 0;
         constructor(webgl: WebGLRenderingContext, urlconfig: string | null, texture: ITexture2D | null)
         {
             this.webgl = webgl;

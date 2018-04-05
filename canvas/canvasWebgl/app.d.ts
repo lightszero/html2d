@@ -201,7 +201,7 @@ declare namespace lighttool {
         constructor(webgl: WebGLRenderingContext, shaderparser: shaderParser);
         begindraw(): void;
         enddraw(): void;
-        shadercode: shadercode;
+        shadercode: shadercode | null;
         mat: spriteMat | null;
         setMat(mat: spriteMat): void;
         array: Float32Array;
@@ -248,7 +248,7 @@ declare namespace lighttool {
         linear: boolean;
         width: number;
         height: number;
-        reader: texReader;
+        reader: texReader | null;
         getReader(redOnly: boolean): texReader | null;
         disposeit: boolean;
         dispose(): void;
@@ -268,7 +268,7 @@ declare namespace lighttool {
         height: number;
         static fromRaw(webgl: WebGLRenderingContext, img: HTMLImageElement, format?: textureformat, mipmap?: boolean, linear?: boolean): spriteTexture;
         mat: spriteMat | null;
-        reader: texReader;
+        reader: texReader | null;
         getReader(redOnly: boolean): texReader | null;
         disposeit: boolean;
         dispose(): void;
@@ -347,7 +347,7 @@ declare class MyCanvasAction implements lighttool.canvasAction {
     btndown: boolean;
     ts: string;
     showtxt: string;
-    custMat: lighttool.spriteMat;
+    custMat: lighttool.spriteMat | null;
     cdDrawer: coolDownDrawer[];
     timer: number;
     ondraw(c: lighttool.spriteCanvas): void;

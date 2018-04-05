@@ -3,12 +3,12 @@ namespace lighttool
 {
     export class texutreMgrItem
     {
-        tex: ITexture2D | null;
-        url: string;
-        urladd: string;
-        format: textureformat;
-        mipmap: boolean;
-        linear: boolean;
+        tex: ITexture2D | null = null;
+        url: string = "";
+        urladd: string = "";
+        format: textureformat = textureformat.RGB;
+        mipmap: boolean = false;
+        linear: boolean = false;
     }
     export class textureMgr
     {
@@ -81,10 +81,10 @@ namespace lighttool
     }
     export class atlasMgrItem
     {
-        atals: spriteAtlas | null;
-        url: string;
-        urlatalstex: string;
-        urlatalstex_add: string;
+        atals: spriteAtlas | null = null;
+        url: string = "";
+        urlatalstex: string = "";
+        urlatalstex_add: string = "";
     }
     export class atlasMgr
     {
@@ -172,10 +172,10 @@ namespace lighttool
     }
     export class fontMgrItem
     {
-        font: spriteFont | null;
-        url: string;
-        urlatalstex: string;
-        urlatalstex_add: string;
+        font: spriteFont | null = null;
+        url: string = "";
+        urlatalstex: string = "";
+        urlatalstex_add: string = "";
     }
     export class fontMgr
     {

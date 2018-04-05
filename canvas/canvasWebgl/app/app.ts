@@ -26,7 +26,7 @@ class MyCanvasAction implements lighttool.canvasAction
     ts = "我爱祖国天安门,让我们荡起双桨?";
     showtxt = "";
 
-    custMat: lighttool.spriteMat;
+    custMat: lighttool.spriteMat | null = null;
     cdDrawer: coolDownDrawer[] = [];
     //绘制事件，在这里调用 c.drawXXX 去折腾吧
     timer: number = 0;
@@ -178,14 +178,14 @@ class MyCanvasAction implements lighttool.canvasAction
 }
 class triForDeath
 {
-    tri: lighttool.spritePoint[];
+    tri: lighttool.spritePoint[] = [];
     //开始向量，八边，长度0.5 开方
-    beginX: number;
-    beginY: number;
+    beginX: number = 0;
+    beginY: number = 0;
     //偏移向量，拉出三角形，长度0.5
-    endX: number;
-    endY: number;
-    show: boolean;
+    endX: number = 0;
+    endY: number = 0;
+    show: boolean = false;
 }
 class coolDownDrawer
 {
@@ -272,7 +272,7 @@ class coolDownDrawer
     }
     private atlas: lighttool.spriteAtlas;
     private sprite: string;
-    private arrayvec: triForDeath[];
+    private arrayvec: triForDeath[] = [];
     value: number;
     destRect: lighttool.spriteRect;
     private needChange: boolean;
