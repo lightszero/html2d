@@ -65,7 +65,7 @@ namespace lighttool
             if (a == null) return;
             var _r = a.sprites[sprite];
             if (_r == undefined) return;
-
+            if (a.texture == null) return;
             var l = (border.l - 1) / a.texturewidth;
             var r = (border.r - 1) / a.texturewidth;
             var t = (border.t - 1) / a.textureheight;
@@ -178,7 +178,7 @@ namespace lighttool
             if (a == null) return;
             var _r = a.sprites[sprite];
             if (_r == undefined) return;
-
+            if (a.texture == null) return;
             var l = (border.l - 1) / a.texturewidth;
             var r = (border.r - 1) / a.texturewidth;
             var t = (border.t - 1) / a.textureheight;

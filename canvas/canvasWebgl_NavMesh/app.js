@@ -1,4 +1,4 @@
-var MyCanvasAction = (function () {
+var MyCanvasAction = /** @class */ (function () {
     function MyCanvasAction() {
         this.state = null;
     }

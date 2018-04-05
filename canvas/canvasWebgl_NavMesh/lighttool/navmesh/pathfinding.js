@@ -4,7 +4,7 @@ var lighttool;
 (function (lighttool) {
     var NavMesh;
     (function (NavMesh) {
-        var FindNode = (function () {
+        var FindNode = /** @class */ (function () {
             function FindNode() {
                 this.nodeid = 0;
                 this.pathSessionId = 0;
@@ -31,7 +31,7 @@ var lighttool;
             };
             return FindNode;
         }());
-        var pathFinding = (function () {
+        var pathFinding = /** @class */ (function () {
             function pathFinding() {
             }
             pathFinding.calcAStarPolyPath = function (info, startPoly, endPoly, endPos, offset) {

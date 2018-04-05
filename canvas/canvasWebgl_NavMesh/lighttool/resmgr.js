@@ -1,13 +1,13 @@
 //v0.4
 var lighttool;
 (function (lighttool) {
-    var texutreMgrItem = (function () {
+    var texutreMgrItem = /** @class */ (function () {
         function texutreMgrItem() {
         }
         return texutreMgrItem;
     }());
     lighttool.texutreMgrItem = texutreMgrItem;
-    var textureMgr = (function () {
+    var textureMgr = /** @class */ (function () {
         function textureMgr() {
             this.mapInfo = {};
         }
@@ -66,13 +66,13 @@ var lighttool;
         return textureMgr;
     }());
     lighttool.textureMgr = textureMgr;
-    var atlasMgrItem = (function () {
+    var atlasMgrItem = /** @class */ (function () {
         function atlasMgrItem() {
         }
         return atlasMgrItem;
     }());
     lighttool.atlasMgrItem = atlasMgrItem;
-    var atlasMgr = (function () {
+    var atlasMgr = /** @class */ (function () {
         function atlasMgr() {
             this.mapInfo = {};
         }
@@ -136,13 +136,13 @@ var lighttool;
         return atlasMgr;
     }());
     lighttool.atlasMgr = atlasMgr;
-    var fontMgrItem = (function () {
+    var fontMgrItem = /** @class */ (function () {
         function fontMgrItem() {
         }
         return fontMgrItem;
     }());
     lighttool.fontMgrItem = fontMgrItem;
-    var fontMgr = (function () {
+    var fontMgr = /** @class */ (function () {
         function fontMgr() {
             this.mapInfo = {};
         }
@@ -206,7 +206,7 @@ var lighttool;
         return fontMgr;
     }());
     lighttool.fontMgr = fontMgr;
-    var shaderMgr = (function () {
+    var shaderMgr = /** @class */ (function () {
         function shaderMgr() {
         }
         shaderMgr.parserInstance = function () {

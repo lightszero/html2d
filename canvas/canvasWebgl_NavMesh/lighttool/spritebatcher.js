@@ -2,7 +2,7 @@
 var lighttool;
 (function (lighttool) {
     //加载工具
-    var loadTool = (function () {
+    var loadTool = /** @class */ (function () {
         function loadTool() {
         }
         loadTool.loadText = function (url, fun) {
@@ -52,7 +52,7 @@ var lighttool;
     }());
     lighttool.loadTool = loadTool;
     //shader
-    var shadercode = (function () {
+    var shadercode = /** @class */ (function () {
         function shadercode() {
             this.posPos = -1;
             this.posColor = -1;
@@ -104,7 +104,7 @@ var lighttool;
         return shadercode;
     }());
     lighttool.shadercode = shadercode;
-    var shaderParser = (function () {
+    var shaderParser = /** @class */ (function () {
         function shaderParser() {
             this.mapshader = {};
         }
@@ -168,7 +168,7 @@ var lighttool;
     }());
     lighttool.shaderParser = shaderParser;
     //sprite 基本数据结构
-    var spriteRect = (function () {
+    var spriteRect = /** @class */ (function () {
         function spriteRect(x, y, w, h) {
             if (x === void 0) { x = 0; }
             if (y === void 0) { y = 0; }
@@ -184,7 +184,7 @@ var lighttool;
         return spriteRect;
     }());
     lighttool.spriteRect = spriteRect;
-    var spriteBorder = (function () {
+    var spriteBorder = /** @class */ (function () {
         function spriteBorder(l, t, r, b) {
             if (l === void 0) { l = 0; }
             if (t === void 0) { t = 0; }
@@ -199,7 +199,7 @@ var lighttool;
         return spriteBorder;
     }());
     lighttool.spriteBorder = spriteBorder;
-    var spriteColor = (function () {
+    var spriteColor = /** @class */ (function () {
         function spriteColor(r, g, b, a) {
             if (r === void 0) { r = 1; }
             if (g === void 0) { g = 1; }
@@ -216,20 +216,20 @@ var lighttool;
         return spriteColor;
     }());
     lighttool.spriteColor = spriteColor;
-    var spritePoint = (function () {
+    var spritePoint = /** @class */ (function () {
         function spritePoint() {
         }
         return spritePoint;
     }());
     lighttool.spritePoint = spritePoint;
     //sprite材质
-    var spriteMat = (function () {
+    var spriteMat = /** @class */ (function () {
         function spriteMat() {
         }
         return spriteMat;
     }());
     lighttool.spriteMat = spriteMat;
-    var stateRecorder = (function () {
+    var stateRecorder = /** @class */ (function () {
         function stateRecorder(webgl) {
             this.webgl = webgl;
         }
@@ -276,7 +276,7 @@ var lighttool;
         return stateRecorder;
     }());
     lighttool.stateRecorder = stateRecorder;
-    var spriteBatcher = (function () {
+    var spriteBatcher = /** @class */ (function () {
         function spriteBatcher(webgl, shaderparser) {
             this.ztest = true;
             this.array = new Float32Array(1024 * 13); //ness
@@ -360,18 +360,22 @@ var lighttool;
                 var tex = this.mat.tex0;
                 this.webgl.bindTexture(this.webgl.TEXTURE_2D, tex == null ? null : tex.texture);
                 this.webgl.uniform1i(this.shadercode.uniTex0, 0);
+                //console.log("settex");
             }
             if (this.shadercode.uniTex1 != null) {
                 this.webgl.activeTexture(this.webgl.TEXTURE1);
                 var tex = this.mat.tex1;
                 this.webgl.bindTexture(this.webgl.TEXTURE_2D, tex == null ? null : tex.texture);
                 this.webgl.uniform1i(this.shadercode.uniTex1, 1);
+                //console.log("settex");
             }
             if (this.shadercode.uniCol0 != null) {
                 this.webgl.uniform4f(this.shadercode.uniCol0, mat.col0.r, mat.col0.g, mat.col0.b, mat.col0.a);
+                //console.log("settex");
             }
             if (this.shadercode.uniCol1 != null) {
                 this.webgl.uniform4f(this.shadercode.uniCol1, mat.col1.r, mat.col1.g, mat.col1.b, mat.col1.a);
+                //console.log("settex");
             }
         };
         spriteBatcher.prototype.endbatch = function () {
@@ -437,6 +441,19 @@ var lighttool;
                     this.array[i++] = ps[j].u;
                     this.array[i++] = ps[j].v;
                     this.dataseek++;
+                    //this.data.push(ps[j].x);
+                    //this.data.push(ps[j].y);
+                    //this.data.push(ps[j].z);
+                    //this.data.push(ps[j].r);
+                    //this.data.push(ps[j].g);
+                    //this.data.push(ps[j].b);
+                    //this.data.push(ps[j].a);
+                    //this.data.push(ps[j].r);
+                    //this.data.push(ps[j].g);
+                    //this.data.push(ps[j].b);
+                    //this.data.push(ps[j].a);
+                    //this.data.push(ps[j].u);
+                    //this.data.push(ps[j].v);
                 }
             }
             if (this.dataseek >= 1000) {
@@ -547,13 +564,14 @@ var lighttool;
     }());
     lighttool.spriteBatcher = spriteBatcher;
     //texture
+    var textureformat;
     (function (textureformat) {
         textureformat[textureformat["RGBA"] = 1] = "RGBA";
         textureformat[textureformat["RGB"] = 2] = "RGB";
         textureformat[textureformat["GRAY"] = 3] = "GRAY";
-    })(lighttool.textureformat || (lighttool.textureformat = {}));
-    var textureformat = lighttool.textureformat;
-    var texReader = (function () {
+        //ALPHA = this.webgl.ALPHA,
+    })(textureformat = lighttool.textureformat || (lighttool.textureformat = {}));
+    var texReader = /** @class */ (function () {
         function texReader(webgl, texRGBA, width, height, gray) {
             if (gray === void 0) { gray = true; }
             this.gray = gray;
@@ -594,13 +612,13 @@ var lighttool;
         return texReader;
     }());
     lighttool.texReader = texReader;
-    var spriteTexture = (function () {
+    var spriteTexture = /** @class */ (function () {
         function spriteTexture(webgl, url, format, mipmap, linear) {
-            var _this = this;
             if (url === void 0) { url = null; }
             if (format === void 0) { format = textureformat.RGBA; }
             if (mipmap === void 0) { mipmap = false; }
             if (linear === void 0) { linear = true; }
+            var _this = this;
             this.img = null;
             this.loaded = false;
             this.width = 0;
@@ -798,18 +816,18 @@ var lighttool;
         return spriteTexture;
     }());
     lighttool.spriteTexture = spriteTexture;
-    var sprite = (function () {
+    var sprite = /** @class */ (function () {
         function sprite() {
         }
         return sprite;
     }());
     lighttool.sprite = sprite;
     //atlas
-    var spriteAtlas = (function () {
+    var spriteAtlas = /** @class */ (function () {
         function spriteAtlas(webgl, atlasurl, texture) {
-            var _this = this;
             if (atlasurl === void 0) { atlasurl = null; }
             if (texture === void 0) { texture = null; }
+            var _this = this;
             this.sprites = {};
             this.webgl = webgl;
             if (atlasurl == null) {
@@ -857,13 +875,13 @@ var lighttool;
     }());
     lighttool.spriteAtlas = spriteAtlas;
     //font
-    var charinfo = (function () {
+    var charinfo = /** @class */ (function () {
         function charinfo() {
         }
         return charinfo;
     }());
     lighttool.charinfo = charinfo;
-    var spriteFont = (function () {
+    var spriteFont = /** @class */ (function () {
         function spriteFont(webgl, urlconfig, texture) {
             var _this = this;
             this.pointbuf = [

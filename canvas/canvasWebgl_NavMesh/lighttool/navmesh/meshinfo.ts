@@ -406,7 +406,7 @@ namespace lighttool.NavMesh
             info.vecs = listVec;
 
             var polys: navNode[] = [];
-            var list = <[]>j["p"];
+            var list = <any[]>j["p"];
             for (var i = 0; i < list.length; i++)
 
             //foreach (var json in j.asDict()["p"].AsList())

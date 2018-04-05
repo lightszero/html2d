@@ -1,14 +1,14 @@
 //v0.6
 var lighttool;
 (function (lighttool) {
+    var canvaspointevent;
     (function (canvaspointevent) {
         canvaspointevent[canvaspointevent["NONE"] = 0] = "NONE";
         canvaspointevent[canvaspointevent["POINT_DOWN"] = 1] = "POINT_DOWN";
         canvaspointevent[canvaspointevent["POINT_UP"] = 2] = "POINT_UP";
         canvaspointevent[canvaspointevent["POINT_MOVE"] = 3] = "POINT_MOVE";
-    })(lighttool.canvaspointevent || (lighttool.canvaspointevent = {}));
-    var canvaspointevent = lighttool.canvaspointevent;
-    var spriteCanvas = (function () {
+    })(canvaspointevent = lighttool.canvaspointevent || (lighttool.canvaspointevent = {}));
+    var spriteCanvas = /** @class */ (function () {
         function spriteCanvas(webgl, width, height) {
             this.uvrect = new lighttool.spriteRect();
             this.trect = new lighttool.spriteRect(); //ness

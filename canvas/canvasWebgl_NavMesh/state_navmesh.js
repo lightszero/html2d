@@ -1,4 +1,4 @@
-var stateNavMesh = (function () {
+var stateNavMesh = /** @class */ (function () {
     function stateNavMesh() {
         this.mapx = 0;
         this.ps = [

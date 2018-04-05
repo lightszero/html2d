@@ -2,7 +2,7 @@ var lighttool;
 (function (lighttool) {
     var Native;
     (function (Native) {
-        var canvasAdapter = (function () {
+        var canvasAdapter = /** @class */ (function () {
             function canvasAdapter() {
             }
             canvasAdapter.CreateScreenCanvas = function (webgl, useraction) {

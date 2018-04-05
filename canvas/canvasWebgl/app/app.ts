@@ -1,4 +1,9 @@
-﻿class MyCanvasAction implements lighttool.canvasAction
+﻿///<reference path="../lighttool/canvas.ts" />
+///<reference path="../lighttool/resmgr.ts" />
+///<reference path="../lighttool/spritebatcher.ts" />
+///<reference path="../lighttool/canvas/canvasAdapter_Native.ts" />
+
+class MyCanvasAction implements lighttool.canvasAction
 {
     constructor()
     {
@@ -141,8 +146,8 @@
         c.drawText("f1", this.showtxt, this.trect);
 
         var t2 = lighttool.textureMgr.Instance().load(c.webgl, "dtex");
-
-        c.drawTexture(t2, new lighttool.spriteRect(0, 0, 128, 128));
+        if (t2 != null)
+            c.drawTexture(t2, new lighttool.spriteRect(0, 0, 128, 128));
         for (var ic = 0; ic < this.cdDrawer.length; ic++)
         {
             var v = (this.timer + ic * 0.4) % 2.0;
@@ -338,7 +343,8 @@ class coolDownDrawer
         this.updateTris();
         if (this.needChange == true)
             return;
-        sb.setMat(this.atlas.texture.mat);
+        if (this.atlas && this.atlas.texture && this.atlas.texture.mat)
+            sb.setMat(this.atlas.texture.mat);
         for (var i = 0; i < 8; i++)
         {
             if (this.arrayvec[i].show)
@@ -353,6 +359,9 @@ window.onload = () =>
     //可以用这个方法
     var can2d = document.createElement("canvas");
     var r2d = can2d.getContext("2d");
+    if (r2d == null)
+        return;
+
     r2d.fillStyle = "#000000";
     r2d.fillRect(0, 0, 24, 24);
 
@@ -402,7 +411,9 @@ window.onload = () =>
     //手动加载接口
     lighttool.loadTool.loadText("shader/test.shader.txt?" + Math.random(), (txt, err) =>
     {
-        lighttool.shaderMgr.parserInstance().parseDirect(webgl, txt);
+        if (txt != null)
+
+            lighttool.shaderMgr.parserInstance().parseDirect(webgl, txt);
     }
     );
 
@@ -434,8 +445,11 @@ window.onload = () =>
 
         lighttool.loadTool.loadText("atlas/1.json.txt?" + Math.random(), (txt, err) =>
         {
-            var _atlas = lighttool.spriteAtlas.fromRaw(webgl, txt, _spimg2);
-            lighttool.atlasMgr.Instance().regDirect("1", _atlas);
+            if (txt != null)
+            {
+                var _atlas = lighttool.spriteAtlas.fromRaw(webgl, txt, _spimg2);
+                lighttool.atlasMgr.Instance().regDirect("1", _atlas);
+            }
         }
         );
     };
@@ -450,8 +464,11 @@ window.onload = () =>
         lighttool.textureMgr.Instance().regDirect("tex/STXINGKA.font.png", _spimg3);
         lighttool.loadTool.loadText("font/STXINGKA.font.json.txt", (txt, err) =>
         {
-            var _font = lighttool.spriteFont.fromRaw(webgl, txt, _spimg3);
-            lighttool.fontMgr.Instance().regDirect("f1", _font);
+            if (txt != null)
+            {
+                var _font = lighttool.spriteFont.fromRaw(webgl, txt, _spimg3);
+                lighttool.fontMgr.Instance().regDirect("f1", _font);
+            }
         }
         );
     }

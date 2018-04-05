@@ -1,8 +1,536 @@
+"use strict";
+//v0.6
+var lighttool;
+//v0.6
+(function (lighttool) {
+    var canvaspointevent;
+    (function (canvaspointevent) {
+        canvaspointevent[canvaspointevent["NONE"] = 0] = "NONE";
+        canvaspointevent[canvaspointevent["POINT_DOWN"] = 1] = "POINT_DOWN";
+        canvaspointevent[canvaspointevent["POINT_UP"] = 2] = "POINT_UP";
+        canvaspointevent[canvaspointevent["POINT_MOVE"] = 3] = "POINT_MOVE";
+    })(canvaspointevent = lighttool.canvaspointevent || (lighttool.canvaspointevent = {}));
+    var spriteCanvas = /** @class */ (function () {
+        function spriteCanvas(webgl, width, height) {
+            this.uvrect = new lighttool.spriteRect();
+            this.trect = new lighttool.spriteRect(); //ness
+            this.webgl = webgl;
+            this.width = width;
+            this.height = height;
+            this.spriteBatcher = new lighttool.spriteBatcher(webgl, lighttool.shaderMgr.parserInstance()); //ness
+        }
+        //draw tools
+        spriteCanvas.prototype.drawTexture = function (texture, rect, uvrect, color) {
+            if (uvrect === void 0) { uvrect = lighttool.spriteRect.one; }
+            if (color === void 0) { color = lighttool.spriteColor.white; }
+            texture.draw(this.spriteBatcher, uvrect, rect, color);
+        };
+        spriteCanvas.prototype.drawTextureCustom = function (texture, _mat, rect, uvrect, color, color2) {
+            if (uvrect === void 0) { uvrect = lighttool.spriteRect.one; }
+            if (color === void 0) { color = lighttool.spriteColor.white; }
+            if (color2 === void 0) { color2 = lighttool.spriteColor.white; }
+            texture.drawCustom(this.spriteBatcher, _mat, uvrect, rect, color, color2);
+        };
+        spriteCanvas.prototype.drawSprite = function (atlas, sprite, rect, color) {
+            if (color === void 0) { color = lighttool.spriteColor.white; }
+            var a = lighttool.atlasMgr.Instance().load(this.webgl, atlas);
+            if (a == null)
+                return;
+            var r = a.sprites[sprite];
+            if (r == undefined)
+                return;
+            if (a.texture == null)
+                return;
+            a.texture.draw(this.spriteBatcher, r, rect, color);
+        };
+        spriteCanvas.prototype.drawSpriteCustom = function (atlas, sprite, _mat, rect, color, color2) {
+            if (color === void 0) { color = lighttool.spriteColor.white; }
+            if (color2 === void 0) { color2 = lighttool.spriteColor.white; }
+            var a = lighttool.atlasMgr.Instance().load(this.webgl, atlas);
+            if (a == null)
+                return;
+            var r = a.sprites[sprite];
+            if (r == undefined)
+                return;
+            if (a.texture == null)
+                return;
+            a.texture.drawCustom(this.spriteBatcher, _mat, r, rect, color, color2);
+        };
+        spriteCanvas.prototype.drawSprite9 = function (atlas, sprite, rect, border, color) {
+            if (color === void 0) { color = lighttool.spriteColor.white; }
+            var a = lighttool.atlasMgr.Instance().load(this.webgl, atlas);
+            if (a == null)
+                return;
+            var _r = a.sprites[sprite];
+            if (_r == undefined)
+                return;
+            if (a.texture == null)
+                return;
+            var l = (border.l - 1) / a.texturewidth;
+            var r = (border.r - 1) / a.texturewidth;
+            var t = (border.t - 1) / a.textureheight;
+            var b = (border.b - 1) / a.textureheight;
+            //left top
+            this.uvrect.x = _r.x;
+            this.uvrect.y = _r.y;
+            this.uvrect.w = l;
+            this.uvrect.h = t;
+            this.trect.x = rect.x;
+            this.trect.y = rect.y;
+            this.trect.w = border.l;
+            this.trect.h = border.t;
+            a.texture.draw(this.spriteBatcher, this.uvrect, this.trect, color);
+            //top
+            this.uvrect.x = _r.x + l;
+            this.uvrect.y = _r.y;
+            this.uvrect.w = _r.w - r - l;
+            this.uvrect.h = t;
+            this.trect.x = rect.x + border.l;
+            this.trect.y = rect.y;
+            this.trect.w = rect.w - border.r - border.l;
+            this.trect.h = border.t;
+            a.texture.draw(this.spriteBatcher, this.uvrect, this.trect, color);
+            //right top
+            this.uvrect.x = _r.x + _r.w - r;
+            this.uvrect.y = _r.y;
+            this.uvrect.w = r;
+            this.uvrect.h = t;
+            this.trect.x = rect.x + rect.w - border.r;
+            this.trect.y = rect.y;
+            this.trect.w = border.r;
+            this.trect.h = border.t;
+            a.texture.draw(this.spriteBatcher, this.uvrect, this.trect, color);
+            //left
+            this.uvrect.x = _r.x;
+            this.uvrect.y = _r.y + t;
+            this.uvrect.w = l;
+            this.uvrect.h = _r.h - t - b;
+            this.trect.x = rect.x;
+            this.trect.y = rect.y + border.t;
+            this.trect.w = border.l;
+            this.trect.h = rect.h - border.t - border.b;
+            a.texture.draw(this.spriteBatcher, this.uvrect, this.trect, color);
+            //center
+            this.uvrect.x = _r.x + l;
+            this.uvrect.y = _r.y + t;
+            this.uvrect.w = _r.w - r - l;
+            this.uvrect.h = _r.h - t - b;
+            this.trect.x = rect.x + border.l;
+            this.trect.y = rect.y + border.t;
+            this.trect.w = rect.w - border.r - border.l;
+            this.trect.h = rect.h - border.t - border.b;
+            a.texture.draw(this.spriteBatcher, this.uvrect, this.trect, color);
+            //right
+            this.uvrect.x = _r.x + _r.w - r;
+            this.uvrect.y = _r.y + t;
+            this.uvrect.w = r;
+            this.uvrect.h = _r.h - t - b;
+            this.trect.x = rect.x + rect.w - border.r;
+            this.trect.y = rect.y + border.t;
+            this.trect.w = border.r;
+            this.trect.h = rect.h - border.t - border.b;
+            a.texture.draw(this.spriteBatcher, this.uvrect, this.trect, color);
+            //left bottom
+            this.uvrect.x = _r.x;
+            this.uvrect.y = _r.h + _r.y - b;
+            this.uvrect.w = l;
+            this.uvrect.h = b;
+            this.trect.x = rect.x;
+            this.trect.y = rect.y + rect.h - border.b;
+            this.trect.w = border.l;
+            this.trect.h = border.b;
+            a.texture.draw(this.spriteBatcher, this.uvrect, this.trect, color);
+            //bottom
+            this.uvrect.x = _r.x + l;
+            this.uvrect.y = _r.h + _r.y - b;
+            this.uvrect.w = _r.w - r - l;
+            this.uvrect.h = b;
+            this.trect.x = rect.x + border.l;
+            this.trect.y = rect.y + rect.h - border.b;
+            this.trect.w = rect.w - border.r - border.l;
+            this.trect.h = border.b;
+            a.texture.draw(this.spriteBatcher, this.uvrect, this.trect, color);
+            //right bottom
+            this.uvrect.x = _r.x + _r.w - r;
+            this.uvrect.y = _r.h + _r.y - b;
+            this.uvrect.w = r;
+            this.uvrect.h = b;
+            this.trect.x = rect.x + rect.w - border.r;
+            this.trect.y = rect.y + rect.h - border.b;
+            this.trect.w = border.r;
+            this.trect.h = border.b;
+            a.texture.draw(this.spriteBatcher, this.uvrect, this.trect, color);
+        };
+        spriteCanvas.prototype.drawSprite9Custom = function (atlas, sprite, _mat, rect, border, color, color2) {
+            if (color === void 0) { color = lighttool.spriteColor.white; }
+            if (color2 === void 0) { color2 = lighttool.spriteColor.white; }
+            var a = lighttool.atlasMgr.Instance().load(this.webgl, atlas);
+            if (a == null)
+                return;
+            var _r = a.sprites[sprite];
+            if (_r == undefined)
+                return;
+            if (a.texture == null)
+                return;
+            var l = (border.l - 1) / a.texturewidth;
+            var r = (border.r - 1) / a.texturewidth;
+            var t = (border.t - 1) / a.textureheight;
+            var b = (border.b - 1) / a.textureheight;
+            //left top
+            this.uvrect.x = _r.x;
+            this.uvrect.y = _r.y;
+            this.uvrect.w = l;
+            this.uvrect.h = t;
+            this.trect.x = rect.x;
+            this.trect.y = rect.y;
+            this.trect.w = border.l;
+            this.trect.h = border.t;
+            a.texture.drawCustom(this.spriteBatcher, _mat, this.uvrect, this.trect, color, color2);
+            //top
+            this.uvrect.x = _r.x + l;
+            this.uvrect.y = _r.y;
+            this.uvrect.w = _r.w - r - l;
+            this.uvrect.h = t;
+            this.trect.x = rect.x + border.l;
+            this.trect.y = rect.y;
+            this.trect.w = rect.w - border.r - border.l;
+            this.trect.h = border.t;
+            a.texture.drawCustom(this.spriteBatcher, _mat, this.uvrect, this.trect, color, color2);
+            //right top
+            this.uvrect.x = _r.x + _r.w - r;
+            this.uvrect.y = _r.y;
+            this.uvrect.w = r;
+            this.uvrect.h = t;
+            this.trect.x = rect.x + rect.w - border.r;
+            this.trect.y = rect.y;
+            this.trect.w = border.r;
+            this.trect.h = border.t;
+            a.texture.drawCustom(this.spriteBatcher, _mat, this.uvrect, this.trect, color, color2);
+            //left
+            this.uvrect.x = _r.x;
+            this.uvrect.y = _r.y + t;
+            this.uvrect.w = l;
+            this.uvrect.h = _r.h - t - b;
+            this.trect.x = rect.x;
+            this.trect.y = rect.y + border.t;
+            this.trect.w = border.l;
+            this.trect.h = rect.h - border.t - border.b;
+            a.texture.drawCustom(this.spriteBatcher, _mat, this.uvrect, this.trect, color, color2);
+            //center
+            this.uvrect.x = _r.x + l;
+            this.uvrect.y = _r.y + t;
+            this.uvrect.w = _r.w - r - l;
+            this.uvrect.h = _r.h - t - b;
+            this.trect.x = rect.x + border.l;
+            this.trect.y = rect.y + border.t;
+            this.trect.w = rect.w - border.r - border.l;
+            this.trect.h = rect.h - border.t - border.b;
+            a.texture.drawCustom(this.spriteBatcher, _mat, this.uvrect, this.trect, color, color2);
+            //right
+            this.uvrect.x = _r.x + _r.w - r;
+            this.uvrect.y = _r.y + t;
+            this.uvrect.w = r;
+            this.uvrect.h = _r.h - t - b;
+            this.trect.x = rect.x + rect.w - border.r;
+            this.trect.y = rect.y + border.t;
+            this.trect.w = border.r;
+            this.trect.h = rect.h - border.t - border.b;
+            a.texture.drawCustom(this.spriteBatcher, _mat, this.uvrect, this.trect, color, color2);
+            //left bottom
+            this.uvrect.x = _r.x;
+            this.uvrect.y = _r.h + _r.y - b;
+            this.uvrect.w = l;
+            this.uvrect.h = b;
+            this.trect.x = rect.x;
+            this.trect.y = rect.y + rect.h - border.b;
+            this.trect.w = border.l;
+            this.trect.h = border.b;
+            a.texture.drawCustom(this.spriteBatcher, _mat, this.uvrect, this.trect, color, color2);
+            //bottom
+            this.uvrect.x = _r.x + l;
+            this.uvrect.y = _r.h + _r.y - b;
+            this.uvrect.w = _r.w - r - l;
+            this.uvrect.h = b;
+            this.trect.x = rect.x + border.l;
+            this.trect.y = rect.y + rect.h - border.b;
+            this.trect.w = rect.w - border.r - border.l;
+            this.trect.h = border.b;
+            a.texture.drawCustom(this.spriteBatcher, _mat, this.uvrect, this.trect, color, color2);
+            //right bottom
+            this.uvrect.x = _r.x + _r.w - r;
+            this.uvrect.y = _r.h + _r.y - b;
+            this.uvrect.w = r;
+            this.uvrect.h = b;
+            this.trect.x = rect.x + rect.w - border.r;
+            this.trect.y = rect.y + rect.h - border.b;
+            this.trect.w = border.r;
+            this.trect.h = border.b;
+            a.texture.drawCustom(this.spriteBatcher, _mat, this.uvrect, this.trect, color, color2);
+        };
+        //绘制字体，只画一行，字体沿着左上角对齐，如需其他，参考源码自制
+        spriteCanvas.prototype.drawText = function (font, text, rect, color, color2) {
+            if (color === void 0) { color = lighttool.spriteColor.white; }
+            if (color2 === void 0) { color2 = lighttool.spriteColor.black; }
+            var f = lighttool.fontMgr.Instance().load(this.webgl, font);
+            if (f == null)
+                return;
+            if (f.cmap == undefined)
+                return;
+            var xadd = 0;
+            for (var i = 0; i < text.length; i++) {
+                var c = text.charAt(i);
+                var cinfo = f.cmap[c];
+                if (cinfo == undefined) {
+                    continue;
+                }
+                var s = rect.h / f.lineHeight;
+                this.trect.x = rect.x + xadd + cinfo.xOffset * s; //xadd 横移，cinfo.xOffset * s 偏移
+                this.trect.y = rect.y - cinfo.yOffset * s + f.baseline * s;
+                //cinfo.yOffset * s 偏移
+                //f.baseline * s字体基线，不管字体基线字体的零零点在字体左下角，现在需要左上脚，需要其他对齐方式另说
+                this.trect.h = s * cinfo.ySize;
+                this.trect.w = s * cinfo.xSize;
+                xadd += cinfo.xAddvance * s;
+                if (xadd >= rect.w)
+                    break; //超出绘制限定框，不画了
+                f.draw(this.spriteBatcher, cinfo, this.trect, color, color2);
+            }
+        };
+        return spriteCanvas;
+    }());
+    lighttool.spriteCanvas = spriteCanvas;
+})(lighttool || (lighttool = {}));
+//v0.4
+var lighttool;
+//v0.4
+(function (lighttool) {
+    var texutreMgrItem = /** @class */ (function () {
+        function texutreMgrItem() {
+        }
+        return texutreMgrItem;
+    }());
+    lighttool.texutreMgrItem = texutreMgrItem;
+    var textureMgr = /** @class */ (function () {
+        function textureMgr() {
+            this.mapInfo = {};
+        }
+        textureMgr.Instance = function () {
+            if (textureMgr.g_this == null)
+                textureMgr.g_this = new textureMgr(); //ness
+            return textureMgr.g_this;
+        };
+        textureMgr.prototype.reg = function (url, urladd, format, mipmap, linear) {
+            //重复注册处理
+            var item = this.mapInfo[url];
+            if (item != undefined) {
+                throw new Error("you can't reg the same name"); //ness
+            }
+            item = new texutreMgrItem(); //ness
+            this.mapInfo[url] = item;
+            item.url = url;
+            item.urladd = urladd;
+            item.format = format;
+            item.mipmap = mipmap;
+            item.linear = linear;
+        };
+        textureMgr.prototype.regDirect = function (url, tex) {
+            var item = this.mapInfo[url];
+            if (item != undefined) {
+                throw new Error("you can't reg the same name"); //ness
+            }
+            item = new texutreMgrItem(); //ness
+            this.mapInfo[url] = item;
+            item.url = url;
+            item.tex = tex;
+        };
+        textureMgr.prototype.unreg = function (url) {
+            var item = this.mapInfo[url];
+            if (item == undefined)
+                return;
+            this.unload(url);
+            delete this.mapInfo[url]; // = undefined;
+        };
+        textureMgr.prototype.unload = function (url) {
+            var item = this.mapInfo[url];
+            if (item == undefined)
+                return;
+            item.tex.dispose();
+            item.tex = null;
+        };
+        textureMgr.prototype.load = function (webgl, url) {
+            var item = this.mapInfo[url];
+            if (item == undefined)
+                return null;
+            if (item.tex == null) {
+                item.tex = new lighttool.spriteTexture(webgl, item.url + item.urladd, item.format, item.mipmap, item.linear); //ness
+            }
+            return item.tex;
+        };
+        return textureMgr;
+    }());
+    lighttool.textureMgr = textureMgr;
+    var atlasMgrItem = /** @class */ (function () {
+        function atlasMgrItem() {
+        }
+        return atlasMgrItem;
+    }());
+    lighttool.atlasMgrItem = atlasMgrItem;
+    var atlasMgr = /** @class */ (function () {
+        function atlasMgr() {
+            this.mapInfo = {};
+        }
+        atlasMgr.Instance = function () {
+            if (atlasMgr.g_this == null)
+                atlasMgr.g_this = new atlasMgr(); //ness
+            return atlasMgr.g_this;
+        };
+        atlasMgr.prototype.reg = function (name, urlatlas, urlatalstex, urlatalstex_add) {
+            //重复注册处理
+            var item = this.mapInfo[name];
+            if (item != undefined) {
+                throw new Error("you can't reg the same name"); //ness
+            }
+            item = new atlasMgrItem(); //ness
+            this.mapInfo[name] = item;
+            item.url = urlatlas;
+            item.urlatalstex = urlatalstex;
+            item.urlatalstex_add = urlatalstex_add;
+        };
+        atlasMgr.prototype.unreg = function (name, disposetex) {
+            var item = this.mapInfo[name];
+            if (item == undefined)
+                return;
+            this.unload(name, disposetex);
+            delete this.mapInfo[name];
+        };
+        atlasMgr.prototype.regDirect = function (name, atlas) {
+            var item = this.mapInfo[name];
+            if (item != undefined) {
+                throw new Error("you can't reg the same name"); //ness
+            }
+            item = new atlasMgrItem(); //ness
+            this.mapInfo[name] = item;
+            item.atals = atlas;
+        };
+        atlasMgr.prototype.unload = function (name, disposetex) {
+            var item = this.mapInfo[name];
+            if (item == undefined)
+                return;
+            if (disposetex) {
+                if (item.atals && item.atals.texture) {
+                    item.atals.texture.dispose();
+                    item.atals.texture = null;
+                }
+            }
+            item.atals = null;
+        };
+        atlasMgr.prototype.load = function (webgl, name) {
+            var item = this.mapInfo[name];
+            if (item == undefined)
+                return null;
+            if (item.atals == null) {
+                var tex = textureMgr.Instance().load(webgl, item.urlatalstex);
+                if (tex == undefined) {
+                    textureMgr.Instance().reg(item.urlatalstex, item.urlatalstex_add, lighttool.textureformat.RGBA, false, true);
+                    tex = textureMgr.Instance().load(webgl, item.urlatalstex);
+                }
+                item.atals = new lighttool.spriteAtlas(webgl, item.url, tex); //ness
+            }
+            return item.atals;
+        };
+        return atlasMgr;
+    }());
+    lighttool.atlasMgr = atlasMgr;
+    var fontMgrItem = /** @class */ (function () {
+        function fontMgrItem() {
+        }
+        return fontMgrItem;
+    }());
+    lighttool.fontMgrItem = fontMgrItem;
+    var fontMgr = /** @class */ (function () {
+        function fontMgr() {
+            this.mapInfo = {};
+        }
+        fontMgr.Instance = function () {
+            if (fontMgr.g_this == null)
+                fontMgr.g_this = new fontMgr(); //ness
+            return fontMgr.g_this;
+        };
+        fontMgr.prototype.reg = function (name, urlfont, urlatalstex, urlatalstex_add) {
+            //重复注册处理
+            var item = this.mapInfo[name];
+            if (item != undefined) {
+                throw new Error("you can't reg the same name"); //ness
+            }
+            item = new fontMgrItem(); //ness
+            this.mapInfo[name] = item;
+            item.url = urlfont;
+            item.urlatalstex = urlatalstex;
+            item.urlatalstex_add = urlatalstex_add;
+        };
+        fontMgr.prototype.regDirect = function (name, font) {
+            var item = this.mapInfo[name];
+            if (item != undefined) {
+                throw new Error("you can't reg the same name"); //ness
+            }
+            item = new fontMgrItem(); //ness
+            this.mapInfo[name] = item;
+            item.font = font;
+        };
+        fontMgr.prototype.unreg = function (name, disposetex) {
+            var item = this.mapInfo[name];
+            if (item == undefined)
+                return;
+            this.unload(name, disposetex);
+            delete this.mapInfo[name];
+        };
+        fontMgr.prototype.unload = function (name, disposetex) {
+            var item = this.mapInfo[name];
+            if (item == undefined)
+                return;
+            if (disposetex && item.font && item.font.texture) {
+                item.font.texture.dispose();
+                item.font.texture = null;
+            }
+            item.font = null;
+        };
+        fontMgr.prototype.load = function (webgl, name) {
+            var item = this.mapInfo[name];
+            if (item == undefined)
+                return null;
+            if (item.font == null) {
+                var tex = textureMgr.Instance().load(webgl, item.urlatalstex);
+                if (tex == null) {
+                    textureMgr.Instance().reg(item.urlatalstex, item.urlatalstex_add, lighttool.textureformat.GRAY, false, true);
+                    tex = textureMgr.Instance().load(webgl, item.urlatalstex);
+                }
+                if (tex != null) {
+                    item.font = new lighttool.spriteFont(webgl, item.url, tex); //ness
+                }
+            }
+            return item.font;
+        };
+        return fontMgr;
+    }());
+    lighttool.fontMgr = fontMgr;
+    var shaderMgr = /** @class */ (function () {
+        function shaderMgr() {
+        }
+        shaderMgr.parserInstance = function () {
+            if (shaderMgr.g_shaderParser == null)
+                shaderMgr.g_shaderParser = new lighttool.shaderParser(); //ness
+            return shaderMgr.g_shaderParser;
+        };
+        return shaderMgr;
+    }());
+    lighttool.shaderMgr = shaderMgr;
+})(lighttool || (lighttool = {}));
 //v0.75
 var lighttool;
+//v0.75
 (function (lighttool) {
     //加载工具
-    var loadTool = (function () {
+    var loadTool = /** @class */ (function () {
         function loadTool() {
         }
         loadTool.loadText = function (url, fun) {
@@ -52,7 +580,7 @@ var lighttool;
     }());
     lighttool.loadTool = loadTool;
     //shader
-    var shadercode = (function () {
+    var shadercode = /** @class */ (function () {
         function shadercode() {
             this.posPos = -1;
             this.posColor = -1;
@@ -104,7 +632,7 @@ var lighttool;
         return shadercode;
     }());
     lighttool.shadercode = shadercode;
-    var shaderParser = (function () {
+    var shaderParser = /** @class */ (function () {
         function shaderParser() {
             this.mapshader = {};
         }
@@ -143,8 +671,10 @@ var lighttool;
         shaderParser.prototype.parseUrl = function (webgl, url) {
             var _this = this;
             lighttool.loadTool.loadText(url, function (txt, err) {
-                _this._parser(txt);
-                _this.compile(webgl);
+                if (txt != null) {
+                    _this._parser(txt);
+                    _this.compile(webgl);
+                }
                 //spriteBatcher
             });
         };
@@ -168,7 +698,7 @@ var lighttool;
     }());
     lighttool.shaderParser = shaderParser;
     //sprite 基本数据结构
-    var spriteRect = (function () {
+    var spriteRect = /** @class */ (function () {
         function spriteRect(x, y, w, h) {
             if (x === void 0) { x = 0; }
             if (y === void 0) { y = 0; }
@@ -184,7 +714,7 @@ var lighttool;
         return spriteRect;
     }());
     lighttool.spriteRect = spriteRect;
-    var spriteBorder = (function () {
+    var spriteBorder = /** @class */ (function () {
         function spriteBorder(l, t, r, b) {
             if (l === void 0) { l = 0; }
             if (t === void 0) { t = 0; }
@@ -199,7 +729,7 @@ var lighttool;
         return spriteBorder;
     }());
     lighttool.spriteBorder = spriteBorder;
-    var spriteColor = (function () {
+    var spriteColor = /** @class */ (function () {
         function spriteColor(r, g, b, a) {
             if (r === void 0) { r = 1; }
             if (g === void 0) { g = 1; }
@@ -216,20 +746,20 @@ var lighttool;
         return spriteColor;
     }());
     lighttool.spriteColor = spriteColor;
-    var spritePoint = (function () {
+    var spritePoint = /** @class */ (function () {
         function spritePoint() {
         }
         return spritePoint;
     }());
     lighttool.spritePoint = spritePoint;
     //sprite材质
-    var spriteMat = (function () {
+    var spriteMat = /** @class */ (function () {
         function spriteMat() {
         }
         return spriteMat;
     }());
     lighttool.spriteMat = spriteMat;
-    var stateRecorder = (function () {
+    var stateRecorder = /** @class */ (function () {
         function stateRecorder(webgl) {
             this.webgl = webgl;
         }
@@ -276,7 +806,7 @@ var lighttool;
         return stateRecorder;
     }());
     lighttool.stateRecorder = stateRecorder;
-    var spriteBatcher = (function () {
+    var spriteBatcher = /** @class */ (function () {
         function spriteBatcher(webgl, shaderparser) {
             this.ztest = true;
             this.array = new Float32Array(1024 * 13); //ness
@@ -360,18 +890,22 @@ var lighttool;
                 var tex = this.mat.tex0;
                 this.webgl.bindTexture(this.webgl.TEXTURE_2D, tex == null ? null : tex.texture);
                 this.webgl.uniform1i(this.shadercode.uniTex0, 0);
+                //console.log("settex");
             }
             if (this.shadercode.uniTex1 != null) {
                 this.webgl.activeTexture(this.webgl.TEXTURE1);
                 var tex = this.mat.tex1;
                 this.webgl.bindTexture(this.webgl.TEXTURE_2D, tex == null ? null : tex.texture);
                 this.webgl.uniform1i(this.shadercode.uniTex1, 1);
+                //console.log("settex");
             }
             if (this.shadercode.uniCol0 != null) {
                 this.webgl.uniform4f(this.shadercode.uniCol0, mat.col0.r, mat.col0.g, mat.col0.b, mat.col0.a);
+                //console.log("settex");
             }
             if (this.shadercode.uniCol1 != null) {
                 this.webgl.uniform4f(this.shadercode.uniCol1, mat.col1.r, mat.col1.g, mat.col1.b, mat.col1.a);
+                //console.log("settex");
             }
         };
         spriteBatcher.prototype.endbatch = function () {
@@ -437,6 +971,19 @@ var lighttool;
                     this.array[i++] = ps[j].u;
                     this.array[i++] = ps[j].v;
                     this.dataseek++;
+                    //this.data.push(ps[j].x);
+                    //this.data.push(ps[j].y);
+                    //this.data.push(ps[j].z);
+                    //this.data.push(ps[j].r);
+                    //this.data.push(ps[j].g);
+                    //this.data.push(ps[j].b);
+                    //this.data.push(ps[j].a);
+                    //this.data.push(ps[j].r);
+                    //this.data.push(ps[j].g);
+                    //this.data.push(ps[j].b);
+                    //this.data.push(ps[j].a);
+                    //this.data.push(ps[j].u);
+                    //this.data.push(ps[j].v);
                 }
             }
             if (this.dataseek >= 1000) {
@@ -547,13 +1094,14 @@ var lighttool;
     }());
     lighttool.spriteBatcher = spriteBatcher;
     //texture
+    var textureformat;
     (function (textureformat) {
         textureformat[textureformat["RGBA"] = 1] = "RGBA";
         textureformat[textureformat["RGB"] = 2] = "RGB";
         textureformat[textureformat["GRAY"] = 3] = "GRAY";
-    })(lighttool.textureformat || (lighttool.textureformat = {}));
-    var textureformat = lighttool.textureformat;
-    var texReader = (function () {
+        //ALPHA = this.webgl.ALPHA,
+    })(textureformat = lighttool.textureformat || (lighttool.textureformat = {}));
+    var texReader = /** @class */ (function () {
         function texReader(webgl, texRGBA, width, height, gray) {
             if (gray === void 0) { gray = true; }
             this.gray = gray;
@@ -594,7 +1142,7 @@ var lighttool;
         return texReader;
     }());
     lighttool.texReader = texReader;
-    var dynTexture = (function () {
+    var dynTexture = /** @class */ (function () {
         function dynTexture(webgl, width, height, format, mipmap, linear) {
             if (format === void 0) { format = textureformat.RGBA; }
             if (mipmap === void 0) { mipmap = false; }
@@ -731,7 +1279,9 @@ var lighttool;
                 p.b = c.b;
                 p.a = c.a;
             }
-            spriteBatcher.setMat(this.mat);
+            if (this.mat != null) {
+                spriteBatcher.setMat(this.mat);
+            }
             spriteBatcher.addRect(this.pointbuf);
         };
         dynTexture.prototype.drawCustom = function (spriteBatcher, _mat, uv, rect, c, c2) {
@@ -784,13 +1334,13 @@ var lighttool;
         return dynTexture;
     }());
     lighttool.dynTexture = dynTexture;
-    var spriteTexture = (function () {
+    var spriteTexture = /** @class */ (function () {
         function spriteTexture(webgl, url, format, mipmap, linear) {
-            var _this = this;
             if (url === void 0) { url = null; }
             if (format === void 0) { format = textureformat.RGBA; }
             if (mipmap === void 0) { mipmap = false; }
             if (linear === void 0) { linear = true; }
+            var _this = this;
             this.img = null;
             this.loaded = false;
             this.width = 0;
@@ -823,6 +1373,8 @@ var lighttool;
             };
         }
         spriteTexture.prototype._loadimg = function (mipmap, linear) {
+            if (this.img == null)
+                return;
             this.width = this.img.width;
             this.height = this.img.height;
             this.loaded = true;
@@ -834,9 +1386,11 @@ var lighttool;
                 formatGL = this.webgl.RGB;
             else if (this.format == textureformat.GRAY)
                 formatGL = this.webgl.LUMINANCE;
-            this.webgl.texImage2D(this.webgl.TEXTURE_2D, 0, formatGL, formatGL, 
-            //最后这个type，可以管格式
-            this.webgl.UNSIGNED_BYTE, this.img);
+            if (this.img != null) {
+                this.webgl.texImage2D(this.webgl.TEXTURE_2D, 0, formatGL, formatGL, 
+                //最后这个type，可以管格式
+                this.webgl.UNSIGNED_BYTE, this.img);
+            }
             if (mipmap) {
                 //生成mipmap
                 this.webgl.generateMipmap(this.webgl.TEXTURE_2D);
@@ -935,7 +1489,9 @@ var lighttool;
                 p.b = c.b;
                 p.a = c.a;
             }
-            spriteBatcher.setMat(this.mat);
+            if (this.mat != null) {
+                spriteBatcher.setMat(this.mat);
+            }
             spriteBatcher.addRect(this.pointbuf);
         };
         spriteTexture.prototype.drawCustom = function (spriteBatcher, _mat, uv, rect, c, c2) {
@@ -988,25 +1544,26 @@ var lighttool;
         return spriteTexture;
     }());
     lighttool.spriteTexture = spriteTexture;
-    var sprite = (function () {
+    var sprite = /** @class */ (function () {
         function sprite() {
         }
         return sprite;
     }());
     lighttool.sprite = sprite;
     //atlas
-    var spriteAtlas = (function () {
+    var spriteAtlas = /** @class */ (function () {
         function spriteAtlas(webgl, atlasurl, texture) {
-            var _this = this;
             if (atlasurl === void 0) { atlasurl = null; }
             if (texture === void 0) { texture = null; }
+            var _this = this;
             this.sprites = {};
             this.webgl = webgl;
             if (atlasurl == null) {
             }
             else {
                 lighttool.loadTool.loadText(atlasurl, function (txt, err) {
-                    _this._parse(txt);
+                    if (txt != null)
+                        _this._parse(txt);
                 });
             }
             this.texture = texture;
@@ -1047,13 +1604,13 @@ var lighttool;
     }());
     lighttool.spriteAtlas = spriteAtlas;
     //font
-    var charinfo = (function () {
+    var charinfo = /** @class */ (function () {
         function charinfo() {
         }
         return charinfo;
     }());
     lighttool.charinfo = charinfo;
-    var spriteFont = (function () {
+    var spriteFont = /** @class */ (function () {
         function spriteFont(webgl, urlconfig, texture) {
             var _this = this;
             this.pointbuf = [
@@ -1065,7 +1622,9 @@ var lighttool;
             this.webgl = webgl;
             if (urlconfig != null) {
                 lighttool.loadTool.loadText(urlconfig, function (txt, err) {
-                    _this._parse(txt);
+                    if (txt != null) {
+                        _this._parse(txt);
+                    }
                 });
             }
             this.texture = texture;
@@ -1249,4 +1808,86 @@ var lighttool;
     }());
     lighttool.spriteFont = spriteFont;
 })(lighttool || (lighttool = {}));
-//# sourceMappingURL=spritebatcher.js.map
+var lighttool;
+(function (lighttool) {
+    var Native;
+    (function (Native) {
+        var canvasAdapter = /** @class */ (function () {
+            function canvasAdapter() {
+            }
+            canvasAdapter.CreateScreenCanvas = function (webgl, useraction) {
+                var el = webgl.canvas;
+                el.width = el.clientWidth;
+                el.height = el.clientHeight;
+                var c = new lighttool.spriteCanvas(webgl, webgl.drawingBufferWidth, webgl.drawingBufferHeight);
+                //var asp = range.width / range.height;
+                c.spriteBatcher.matrix = new Float32Array([
+                    1.0 * 2 / c.width, 0, 0, 0,
+                    0, 1 * -1 * 2 / c.height, 0, 0,
+                    0, 0, 1, 0,
+                    -1, 1, 0, 1
+                ]);
+                c.spriteBatcher.ztest = false; //最前不需要ztest
+                var ua = useraction;
+                setInterval(function () {
+                    webgl.viewport(0, 0, webgl.drawingBufferWidth, webgl.drawingBufferHeight);
+                    webgl.clear(webgl.COLOR_BUFFER_BIT | webgl.DEPTH_BUFFER_BIT);
+                    webgl.clearColor(1.0, 0.0, 1.0, 1.0);
+                    c.spriteBatcher.begindraw();
+                    ua.ondraw(c);
+                    c.spriteBatcher.enddraw();
+                    webgl.flush();
+                }, 20);
+                window.addEventListener("resize", function () {
+                    var el = webgl.canvas;
+                    el.width = el.clientWidth;
+                    el.height = el.clientHeight;
+                    el.width = el.clientWidth;
+                    el.height = el.clientHeight;
+                    c.width = el.width;
+                    c.height = el.height;
+                    c.spriteBatcher.matrix = new Float32Array([
+                        1.0 * 2 / c.width, 0, 0, 0,
+                        0, 1 * -1 * 2 / c.height, 0, 0,
+                        0, 0, 1, 0,
+                        -1, 1, 0, 1
+                    ]);
+                    ////do resize func
+                    ua.onresize(c);
+                });
+                el.onmousemove = function (ev) {
+                    ua.onpointevent(c, lighttool.canvaspointevent.POINT_MOVE, ev.offsetX, ev.offsetY);
+                };
+                el.onmouseup = function (ev) {
+                    ua.onpointevent(c, lighttool.canvaspointevent.POINT_UP, ev.offsetX, ev.offsetY);
+                };
+                el.onmousedown = function (ev) {
+                    ua.onpointevent(c, lighttool.canvaspointevent.POINT_DOWN, ev.offsetX, ev.offsetY);
+                };
+                //scene.onPointerObservable.add((pinfo: BABYLON.PointerInfo, state: BABYLON.EventState) =>
+                //{
+                //    var range = scene.getEngine().getRenderingCanvasClientRect();
+                //    //输入
+                //    var e: lighttool.canvaspointevent = lighttool.canvaspointevent.NONE;
+                //    if (pinfo.type == BABYLON.PointerEventTypes.POINTERDOWN)
+                //        e = lighttool.canvaspointevent.POINT_DOWN;
+                //    if (pinfo.type == BABYLON.PointerEventTypes.POINTERMOVE)
+                //        e = lighttool.canvaspointevent.POINT_MOVE;
+                //    if (pinfo.type == BABYLON.PointerEventTypes.POINTERUP)
+                //        e = lighttool.canvaspointevent.POINT_UP;
+                //    //缩放到canvas size
+                //    var x = pinfo.event.offsetX / range.width * c.width;
+                //    var y = pinfo.event.offsetY / range.height * c.height;
+                //    var skip: boolean = ua.onpointevent(c, e, x, y);
+                //    //对 babylon，来说 2d在这里输入，3d 要 pick 以后咯
+                //    state.skipNextObservers = skip;//是否中断事件
+                //}
+                //);
+                return c;
+            };
+            return canvasAdapter;
+        }());
+        Native.canvasAdapter = canvasAdapter;
+    })(Native = lighttool.Native || (lighttool.Native = {}));
+})(lighttool || (lighttool = {}));
+//# sourceMappingURL=webglcanvas.js.map

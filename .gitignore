@@ -1,1 +1,7 @@
 /fonttool/bin
+/canvas/canvasWebgl/obj
+/canvas/canvasWebgl/bin
+/canvas/canvasWebgl_Demo2/bin
+/canvas/canvasWebgl_Demo2/obj
+/canvas/canvasWebgl_NavMesh/obj
+/canvas/canvasWebgl_NavMesh/bin

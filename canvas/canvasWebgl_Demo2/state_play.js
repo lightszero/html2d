@@ -1,4 +1,4 @@
-var statePlay = (function () {
+var statePlay = /** @class */ (function () {
     function statePlay() {
         this.mapx = 0;
         this.playerframe = 0;

@@ -2,7 +2,7 @@ var lighttool;
 (function (lighttool) {
     var NavMesh;
     (function (NavMesh) {
-        var navVec3 = (function () {
+        var navVec3 = /** @class */ (function () {
             function navVec3() {
                 this.x = 0;
                 this.y = 0;
@@ -61,7 +61,7 @@ var lighttool;
             return navVec3;
         }());
         NavMesh.navVec3 = navVec3;
-        var navNode = (function () {
+        var navNode = /** @class */ (function () {
             function navNode() {
                 this.nodeID = 0;
                 this.poly = null;
@@ -161,7 +161,7 @@ var lighttool;
             return navNode;
         }());
         NavMesh.navNode = navNode;
-        var navBorder = (function () {
+        var navBorder = /** @class */ (function () {
             function navBorder() {
                 this.borderName = null;
                 this.nodeA = 0;
@@ -174,7 +174,7 @@ var lighttool;
             return navBorder;
         }());
         NavMesh.navBorder = navBorder;
-        var navMeshInfo = (function () {
+        var navMeshInfo = /** @class */ (function () {
             function navMeshInfo() {
                 this.vecs = null;
                 this.nodes = null;

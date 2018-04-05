@@ -1,5 +1,0 @@
-D:\git\webgl\canvas\canvasWebgl_NavMesh\bin\canvasWebgl_NavMesh.dll.config
-D:\git\webgl\canvas\canvasWebgl_NavMesh\bin\canvasWebgl_NavMesh.dll
-D:\git\webgl\canvas\canvasWebgl_NavMesh\bin\canvasWebgl_NavMesh.pdb
-D:\git\webgl\canvas\canvasWebgl_NavMesh\obj\Debug\canvasWebgl_NavMesh.dll
-D:\git\webgl\canvas\canvasWebgl_NavMesh\obj\Debug\canvasWebgl_NavMesh.pdb

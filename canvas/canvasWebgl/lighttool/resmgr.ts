@@ -3,7 +3,7 @@ namespace lighttool
 {
     export class texutreMgrItem
     {
-        tex: ITexture2D;
+        tex: ITexture2D | null;
         url: string;
         urladd: string;
         format: textureformat;
@@ -58,17 +58,17 @@ namespace lighttool
             if (item == undefined) return;
             this.unload(url);
 
-            this.mapInfo[url] = undefined;
+            delete this.mapInfo[url];// = undefined;
         }
         unload(url: string)
         {
             var item = this.mapInfo[url];
             if (item == undefined) return;
 
-            item.tex.dispose();
+            item.tex!.dispose();
             item.tex = null;
         }
-        load(webgl: WebGLRenderingContext, url: string): ITexture2D
+        load(webgl: WebGLRenderingContext, url: string): ITexture2D | null
         {
             var item = this.mapInfo[url];
             if (item == undefined) return null;
@@ -81,7 +81,7 @@ namespace lighttool
     }
     export class atlasMgrItem
     {
-        atals: spriteAtlas;
+        atals: spriteAtlas | null;
         url: string;
         urlatalstex: string;
         urlatalstex_add: string;
@@ -119,7 +119,7 @@ namespace lighttool
             if (item == undefined) return;
             this.unload(name, disposetex);
 
-            this.mapInfo[name] = undefined;
+            delete this.mapInfo[name];
 
         }
         regDirect(name: string, atlas: spriteAtlas)
@@ -141,13 +141,16 @@ namespace lighttool
 
             if (disposetex)
             {
-                item.atals.texture.dispose();
-                item.atals.texture = null;
+                if (item.atals && item.atals.texture)
+                {
+                    item.atals.texture.dispose();
+                    item.atals.texture = null;
+                }
             }
             item.atals = null;
         }
 
-        load(webgl: WebGLRenderingContext, name: string): spriteAtlas
+        load(webgl: WebGLRenderingContext, name: string): spriteAtlas | null
         {
             var item = this.mapInfo[name];
             if (item == undefined) return null;
@@ -169,7 +172,7 @@ namespace lighttool
     }
     export class fontMgrItem
     {
-        font: spriteFont;
+        font: spriteFont | null;
         url: string;
         urlatalstex: string;
         urlatalstex_add: string;
@@ -219,7 +222,7 @@ namespace lighttool
             if (item == undefined) return;
             this.unload(name, disposetex);
 
-            this.mapInfo[name] = undefined;
+            delete this.mapInfo[name];
 
         }
 
@@ -228,7 +231,7 @@ namespace lighttool
             var item = this.mapInfo[name];
             if (item == undefined) return;
 
-            if (disposetex)
+            if (disposetex && item.font && item.font.texture)
             {
                 item.font.texture.dispose();
                 item.font.texture = null;
@@ -236,21 +239,24 @@ namespace lighttool
             item.font = null;
         }
 
-        load(webgl: WebGLRenderingContext, name: string): spriteFont
+        load(webgl: WebGLRenderingContext, name: string): spriteFont | null
         {
             var item = this.mapInfo[name];
             if (item == undefined) return null;
             if (item.font == null)
             {
                 var tex = textureMgr.Instance().load(webgl, item.urlatalstex);
-                if (tex == undefined)
+                if (tex == null)
                 {
                     textureMgr.Instance().reg(item.urlatalstex, item.urlatalstex_add,
                         lighttool.textureformat.GRAY, false, true);
 
                     tex = textureMgr.Instance().load(webgl, item.urlatalstex);
                 }
-                item.font = new spriteFont(webgl, item.url, tex);//ness
+                if (tex != null)
+                {
+                    item.font = new spriteFont(webgl, item.url, tex);//ness
+                }
             }
             return item.font;
 

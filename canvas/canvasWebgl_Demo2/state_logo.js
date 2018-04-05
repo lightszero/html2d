@@ -1,4 +1,4 @@
-var stateLogo = (function () {
+var stateLogo = /** @class */ (function () {
     function stateLogo() {
         this.pick = false; //是否pick标记
         this.mapx = 0;

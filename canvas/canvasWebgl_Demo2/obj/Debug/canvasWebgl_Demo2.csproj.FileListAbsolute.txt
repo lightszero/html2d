@@ -1,5 +1,0 @@
-D:\git\webgl\canvas\canvasWebgl_Demo2\bin\canvasWebgl_Demo2.dll.config
-D:\git\webgl\canvas\canvasWebgl_Demo2\bin\canvasWebgl_Demo2.dll
-D:\git\webgl\canvas\canvasWebgl_Demo2\bin\canvasWebgl_Demo2.pdb
-D:\git\webgl\canvas\canvasWebgl_Demo2\obj\Debug\canvasWebgl_Demo2.dll
-D:\git\webgl\canvas\canvasWebgl_Demo2\obj\Debug\canvasWebgl_Demo2.pdb

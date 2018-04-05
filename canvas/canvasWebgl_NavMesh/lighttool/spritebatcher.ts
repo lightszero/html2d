@@ -1026,11 +1026,11 @@ namespace lighttool
             this.textureurl = json["t"];
             this.texturewidth = json["w"];
             this.textureheight = json["h"];
-            var s = <[]>json["s"];
+            var s = <any[]>json["s"];
 
             for (var i in s)
             {
-                var ss = <[]>s[i];
+                var ss = <any[]>s[i];
                 var r: sprite = new sprite();//ness
                 r.x = (<number>ss[1] + 0.5) / this.texturewidth;
                 r.y = (<number>ss[2] + 0.5) / this.textureheight;
@@ -1109,7 +1109,7 @@ namespace lighttool
             let json = JSON.parse(txt);
 
             //parse fontinfo
-            var font = <[]>json["font"];
+            var font = <any[]>json["font"];
             this.fontname = <string>font[0];
             this.pointSize = <number>font[1];
             this.padding = <number>font[2];

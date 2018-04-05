@@ -4,7 +4,7 @@ namespace lighttool
     //加载工具
     export class loadTool
     {
-        static loadText(url: string, fun: (_txt: string, _err: Error) => void): void
+        static loadText(url: string, fun: (_txt: string | null, _err: Error | null) => void): void
         {
             var req = new XMLHttpRequest();//ness
             req.open("GET", url);
@@ -23,7 +23,7 @@ namespace lighttool
         }
 
 
-        static loadArrayBuffer(url: string, fun: (_bin: ArrayBuffer, _err: Error) => void): void
+        static loadArrayBuffer(url: string, fun: (_bin: ArrayBuffer | null, _err: Error | null) => void): void
         {
             var req = new XMLHttpRequest();//ness
 
@@ -44,7 +44,7 @@ namespace lighttool
             req.send();
         }
 
-        static loadBlob(url: string, fun: (_blob: Blob, _err: Error) => void): void
+        static loadBlob(url: string, fun: (_blob: Blob | null, _err: Error | null) => void): void
         {
             var req = new XMLHttpRequest();//ness
 
@@ -73,19 +73,19 @@ namespace lighttool
     {
         vscode: string;
         fscode: string;
-        vs: WebGLShader;
-        fs: WebGLShader;
-        program: WebGLProgram;
+        vs: WebGLShader | null;
+        fs: WebGLShader | null;
+        program: WebGLProgram | null;
 
         posPos: number = -1;
         posColor: number = -1;
         posColor2: number = -1;
         posUV: number = -1;
-        uniMatrix: WebGLUniformLocation = null;
-        uniTex0: WebGLUniformLocation = null;
-        uniTex1: WebGLUniformLocation = null;
-        uniCol0: WebGLUniformLocation = null;
-        uniCol1: WebGLUniformLocation = null;
+        uniMatrix: WebGLUniformLocation | null = null;
+        uniTex0: WebGLUniformLocation | null = null;
+        uniTex1: WebGLUniformLocation | null = null;
+        uniCol0: WebGLUniformLocation | null = null;
+        uniCol1: WebGLUniformLocation | null = null;
         compile(webgl: WebGLRenderingContext)
         {
             this.vs = webgl.createShader(webgl.VERTEX_SHADER);
@@ -183,8 +183,11 @@ namespace lighttool
         {
             lighttool.loadTool.loadText(url, (txt, err) =>
             {
-                this._parser(txt);
-                this.compile(webgl);
+                if (txt != null)
+                {
+                    this._parser(txt);
+                    this.compile(webgl);
+                }
                 //spriteBatcher
             }
             );
@@ -288,8 +291,8 @@ namespace lighttool
     {
         shader: string;
         transparent: boolean;
-        tex0: ITexture2D;
-        tex1: ITexture2D;
+        tex0: ITexture2D | null;
+        tex1: ITexture2D | null;
         col0: spriteColor;
         col1: spriteColor;
     }
@@ -371,7 +374,7 @@ namespace lighttool
     {
         webgl: WebGLRenderingContext;
         shaderparser: shaderParser;
-        vbo: WebGLBuffer;
+        vbo: WebGLBuffer | null;
         //data: number[] = [];
         matrix: Float32Array;
         ztest: boolean = true;
@@ -402,7 +405,7 @@ namespace lighttool
         }
         shadercode: shadercode;
         //begindraw 和 setmat 到底要不要分开，这是需要再思考一下的
-        mat: spriteMat;
+        mat: spriteMat | null;
         setMat(mat: spriteMat): void
         {
             if (mat == this.mat) return;
@@ -703,7 +706,7 @@ namespace lighttool
             }
         }
 
-        rectClip: spriteRect = null;
+        rectClip: spriteRect | null = null;
         setRectClip(rect: spriteRect)
         {
             this.rectClip = rect;
@@ -778,12 +781,12 @@ namespace lighttool
     }
     export interface ITexture2D
     {
-        texture: WebGLTexture;
-        mat: spriteMat;
-        getReader(redOnly: boolean): texReader;
+        texture: WebGLTexture | null;
+        mat: spriteMat| null;
+        getReader(redOnly: boolean): texReader | null;
         dispose(): void;
-        draw(spriteBatcher: spriteBatcher, uv: spriteRect, rect: spriteRect, c: spriteColor);
-        drawCustom(spriteBatcher: spriteBatcher, _mat: spriteMat, uv: spriteRect, rect: spriteRect, c: spriteColor, c2: spriteColor);
+        draw(spriteBatcher: spriteBatcher, uv: spriteRect, rect: spriteRect, c: spriteColor): void;
+        drawCustom(spriteBatcher: spriteBatcher, _mat: spriteMat, uv: spriteRect, rect: spriteRect, c: spriteColor, c2: spriteColor): void;
     }
     export class dynTexture implements ITexture2D
     {
@@ -804,7 +807,9 @@ namespace lighttool
                 this.data = new Uint8Array(this.width * this.height * 4);
             }
             this.mat = new spriteMat();//ness
+
             this.mat.tex0 = this;
+
             this.mat.transparent = true;
             this.mat.shader = "spritedefault";
 
@@ -825,7 +830,7 @@ namespace lighttool
             this.webgl.texImage2D(this.webgl.TEXTURE_2D,
                 0,
                 formatGL,
-                this.width, this.height,0,
+                this.width, this.height, 0,
                 formatGL,
                 //最后这个type，可以管格式
                 this.webgl.UNSIGNED_BYTE
@@ -871,8 +876,8 @@ namespace lighttool
 
         webgl: WebGLRenderingContext;
 
-        mat: spriteMat = null;
-        texture: WebGLTexture;
+        mat: spriteMat | null = null;
+        texture: WebGLTexture | null;
         format: textureformat;
         mipmap: boolean = false;
         linear: boolean = false;
@@ -881,7 +886,7 @@ namespace lighttool
 
         //创建读取器，有可能失败
         reader: texReader;
-        getReader(redOnly: boolean): texReader
+        getReader(redOnly: boolean): texReader | null
         {
             if (this.reader != null)
             {
@@ -942,7 +947,10 @@ namespace lighttool
                 p.u = uv.x + uv.w; p.v = uv.y + uv.h;
                 p.r = c.r; p.g = c.g; p.b = c.b; p.a = c.a;
             }
-            spriteBatcher.setMat(this.mat);
+            if (this.mat != null)
+            {
+                spriteBatcher.setMat(this.mat);
+            }
             spriteBatcher.addRect(this.pointbuf);
 
         }
@@ -978,7 +986,7 @@ namespace lighttool
     }
     export class spriteTexture implements ITexture2D
     {
-        constructor(webgl: WebGLRenderingContext, url: string = null, format: textureformat = textureformat.RGBA, mipmap: boolean = false, linear: boolean = true)
+        constructor(webgl: WebGLRenderingContext, url: string | null = null, format: textureformat = textureformat.RGBA, mipmap: boolean = false, linear: boolean = true)
         {
             this.webgl = webgl;
             this.format = format;
@@ -1007,6 +1015,8 @@ namespace lighttool
         }
         private _loadimg(mipmap: boolean, linear: boolean): void
         {
+            if (this.img == null)
+                return;
             this.width = this.img.width;
             this.height = this.img.height;
             this.loaded = true;
@@ -1020,14 +1030,16 @@ namespace lighttool
                 formatGL = this.webgl.RGB;
             else if (this.format == textureformat.GRAY)
                 formatGL = this.webgl.LUMINANCE;
-            this.webgl.texImage2D(this.webgl.TEXTURE_2D,
-                0,
-                formatGL,
-                formatGL,
-                //最后这个type，可以管格式
-                this.webgl.UNSIGNED_BYTE
-                , this.img);
-
+            if (this.img != null)
+            {
+                this.webgl.texImage2D(this.webgl.TEXTURE_2D,
+                    0,
+                    formatGL,
+                    formatGL,
+                    //最后这个type，可以管格式
+                    this.webgl.UNSIGNED_BYTE
+                    , this.img);
+            }
             if (mipmap)
             {
                 //生成mipmap
@@ -1065,9 +1077,9 @@ namespace lighttool
 
         }
         webgl: WebGLRenderingContext;
-        img: HTMLImageElement = null;
+        img: HTMLImageElement | null = null;
         loaded: boolean = false;
-        texture: WebGLTexture;
+        texture: WebGLTexture | null;
         format: textureformat;
         width: number = 0;
         height: number = 0;
@@ -1081,10 +1093,10 @@ namespace lighttool
             return st;
 
         }
-        mat: spriteMat = null;
+        mat: spriteMat | null = null;
         //创建读取器，有可能失败
         reader: texReader;
-        getReader(redOnly: boolean): texReader
+        getReader(redOnly: boolean): texReader | null
         {
             if (this.reader != null)
             {
@@ -1144,7 +1156,10 @@ namespace lighttool
                 p.u = uv.x + uv.w; p.v = uv.y + uv.h;
                 p.r = c.r; p.g = c.g; p.b = c.b; p.a = c.a;
             }
-            spriteBatcher.setMat(this.mat);
+            if (this.mat != null)
+            {
+                spriteBatcher.setMat(this.mat);
+            }
             spriteBatcher.addRect(this.pointbuf);
 
         }
@@ -1192,7 +1207,7 @@ namespace lighttool
     export class spriteAtlas
     {
         webgl: WebGLRenderingContext;
-        constructor(webgl: WebGLRenderingContext, atlasurl: string = null, texture: ITexture2D = null)
+        constructor(webgl: WebGLRenderingContext, atlasurl: string | null = null, texture: ITexture2D | null = null)
         {
             this.webgl = webgl;
             if (atlasurl == null)
@@ -1202,13 +1217,14 @@ namespace lighttool
             {
                 lighttool.loadTool.loadText(atlasurl, (txt, err) =>
                 {
-                    this._parse(txt);
+                    if (txt != null)
+                        this._parse(txt);
                 }
                 );
             }
             this.texture = texture;
         }
-        static fromRaw(webgl: WebGLRenderingContext, txt: string, texture: spriteTexture = null): spriteAtlas
+        static fromRaw(webgl: WebGLRenderingContext, txt: string, texture: spriteTexture | null = null): spriteAtlas
         {
             var sa = new spriteAtlas(webgl, null, texture);
             sa._parse(txt);
@@ -1218,7 +1234,7 @@ namespace lighttool
         textureurl: string;
         texturewidth: number;
         textureheight: number;
-        texture: ITexture2D;
+        texture: ITexture2D | null;
         sprites: { [id: string]: sprite } = {};
         private _parse(txt: string): void
         {
@@ -1226,11 +1242,11 @@ namespace lighttool
             this.textureurl = json["t"];
             this.texturewidth = json["w"];
             this.textureheight = json["h"];
-            var s = <[]>json["s"];
+            var s = <any[]>json["s"];
 
             for (var i in s)
             {
-                var ss = <[]>s[i];
+                var ss = <any[]>s[i];
                 var r: sprite = new sprite();//ness
                 r.x = (<number>ss[1] + 0.5) / this.texturewidth;
                 r.y = (<number>ss[2] + 0.5) / this.textureheight;
@@ -1269,7 +1285,7 @@ namespace lighttool
     export class spriteFont
     {
         webgl: WebGLRenderingContext;
-        texture: ITexture2D;
+        texture: ITexture2D | null;
         mat: spriteMat;
 
         cmap: { [id: string]: charinfo };
@@ -1280,14 +1296,17 @@ namespace lighttool
         baseline: number;//基线
         atlasWidth: number;
         atlasHeight: number;
-        constructor(webgl: WebGLRenderingContext, urlconfig: string, texture: ITexture2D)
+        constructor(webgl: WebGLRenderingContext, urlconfig: string | null, texture: ITexture2D | null)
         {
             this.webgl = webgl;
             if (urlconfig != null)
             {
                 lighttool.loadTool.loadText(urlconfig, (txt, err) =>
                 {
-                    this._parse(txt);
+                    if (txt != null)
+                    {
+                        this._parse(txt);
+                    }
                 }
                 );
             }
@@ -1297,7 +1316,7 @@ namespace lighttool
             this.mat.tex0 = this.texture;
             this.mat.transparent = true;
         }
-        static fromRaw(webgl: WebGLRenderingContext, txt: string, texture: spriteTexture = null): spriteFont
+        static fromRaw(webgl: WebGLRenderingContext, txt: string, texture: spriteTexture | null = null): spriteFont
         {
             var sf = new spriteFont(webgl, null, texture);
             sf._parse(txt);
@@ -1309,7 +1328,7 @@ namespace lighttool
             let json = JSON.parse(txt);
 
             //parse fontinfo
-            var font = <[]>json["font"];
+            var font = <any[]>json["font"];
             this.fontname = <string>font[0];
             this.pointSize = <number>font[1];
             this.padding = <number>font[2];
